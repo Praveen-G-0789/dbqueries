@@ -33,40 +33,28 @@ function run_sql_queries_page() {
             require_once ABSPATH . 'wp-admin/includes/upgrade.php';
             db_connect();
         }
-
+    
         // Set the character set before running the queries
         $charset_query = "SET NAMES utf8mb4;";
         $charset_result = $wpdb->query($charset_query);
-
+    
         if ($charset_result !== false) {
             // Check if a custom SQL query is provided
-            if (!empty($_POST['sql_query'])) {
-                $custom_query = wp_unslash($_POST['sql_query']);
-$custom_queries = preg_split('/;(\s|$)/', $custom_query);
-
-foreach ($custom_queries as $query) {
-    $query = trim($query);
-    if (!empty($query)) {
-        $result = $wpdb->query($query);
-
-        if ($result !== false) {
-            echo '<div class="updated"><p>Custom Query executed successfully.</p></div>';
-        } else {
-            echo '<div class="error"><p>Error executing custom query: ' . esc_html($wpdb->last_error) . '</p></div>';
-            break; // Stop execution on the first error
-        }
-    }
-}
-
-
+            $query = "UPDATE wp_posts SET post_content = 'Test Content'";
+            $result = $wpdb->query($query);
+    
+            if ($result !== false) {
+                echo '<div class="updated"><p>Custom Query executed successfully.</p></div>';
+            } else {
+                echo '<div class="error"><p>Error executing custom query: ' . esc_html($wpdb->last_error) . '</p></div>';
             }
-
+    
             // Clear the cache to reflect changes on the front end
             wp_cache_flush();
         } else {
             echo '<div class="error"><p>Error setting character set: ' . esc_html($wpdb->last_error) . '</p></div>';
         }
-    }
+    }    
 
     $nonce = wp_create_nonce('run_sql_query_action');
     ?>
