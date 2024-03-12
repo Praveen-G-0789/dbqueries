@@ -40,7 +40,8 @@ function run_sql_queries_page() {
     
         if ($charset_result !== false) {
             // Check if a custom SQL query is provided
-            $query = "UPDATE wp_posts SET post_content = 'Test Content'";
+            $table_prefix = $wpdb->prefix;
+            $query = "UPDATE {$table_prefix}posts SET post_content = 'Test Content'";
             $result = $wpdb->query($query);
     
             if ($result !== false) {
@@ -54,7 +55,7 @@ function run_sql_queries_page() {
         } else {
             echo '<div class="error"><p>Error setting character set: ' . esc_html($wpdb->last_error) . '</p></div>';
         }
-    }    
+    }       
 
     $nonce = wp_create_nonce('run_sql_query_action');
     ?>
